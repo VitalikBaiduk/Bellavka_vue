@@ -1,17 +1,21 @@
 <template>
-  <div>
-    <LogoSVG />
+  <div class="loader_wrapper">
+    <img src="../assets/loader.svg" />
   </div>
 </template>
 
 <script>
-import LogoSVG from '../assets/loader.svg'
-
 export default {
-  components: {
-    LogoSVG
-  }
+  name: 'custom-loader'
 }
 </script>
 
-<style></style>
+<style>
+.loader_wrapper {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+</style>
