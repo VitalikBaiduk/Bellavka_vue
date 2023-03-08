@@ -86,9 +86,6 @@ export default {
   },
   data() {
     return {
-      currentPrice: 0,
-      oldPrice: 0,
-      secondOptionOfPrice: '',
       promocodeEndDate: this.$store.state.product.promocode.endedAt
     }
   },

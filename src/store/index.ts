@@ -7,7 +7,9 @@ export default createStore({
     loading: false,
     activeItems: {
       items: { activeSize: [], activeHeigth: null }
-    }
+    },
+    isActiveModal: false,
+    modalData: { modalTitle: '', contentTitle: '', contentType: '' }
   },
   getters: {
     product: (state) => {
@@ -21,9 +23,34 @@ export default createStore({
     setLoading(state, isLoading: boolean) {
       state.loading = isLoading
     },
-    setActiveSize(state, items) {
-      console.log('hello')
+    setActiveSizes(state, items) {
       state.activeItems.items = items
+    },
+    setIsActiveModal(state, isActiveModal) {
+      state.isActiveModal = isActiveModal
+    },
+    setModalData(state) {
+      const modalData = {
+        modalTitle:
+          state.activeItems.items.activeSize.length === 0
+            ? 'выберите размер'
+            : state.activeItems.items.activeHeigth === null
+            ? 'выберите рост'
+            : '',
+        contentTitle:
+          state.activeItems.items.activeSize.length === 0
+            ? 'Какой у вас размер?'
+            : state.activeItems.items.activeHeigth === null
+            ? 'Какой у вас рост?'
+            : '',
+        contentType:
+          state.activeItems.items.activeSize.length === 0
+            ? 'SIZE'
+            : state.activeItems.items.activeHeigth === null
+            ? 'HEIGTH'
+            : ''
+      }
+      state.modalData = modalData
     }
   },
   actions: {
@@ -40,7 +67,6 @@ export default createStore({
             }
           }
         )
-        console.log(data)
         const aboutProductData = {
           countryofOrigin: 'Республика Беларусь',
           equipment: data.data.kits

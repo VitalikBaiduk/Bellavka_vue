@@ -1,13 +1,14 @@
 <template>
   <div
     v-if="type === 'IN_CART'"
+    @click="$emit('callback')"
     class="common_button_wrapper"
     :class="{ in_card: type === 'IN_CART' }"
   >
     <img src="../../assets/blackCart.svg" alt="" />
     <span class="common_button_text">в корзину</span>
   </div>
-  <div v-if="type === 'IN_ONE_CLICK'" class="common_button_wrapper">
+  <div v-if="type === 'IN_ONE_CLICK'" @click="$emit('callback')" class="common_button_wrapper">
     <img src="../../assets/hand.svg" alt="" />
     <span class="common_button_text">купить в 1 клик</span>
   </div>

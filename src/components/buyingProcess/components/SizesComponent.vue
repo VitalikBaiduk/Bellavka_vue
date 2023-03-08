@@ -5,15 +5,24 @@
       <div
         v-for="(item, index) in sizeData"
         :key="index"
-        v-on:click="onItemClick(type, item.id)"
+        v-on:click="onItemClick(type, item.id, type === 'HEIGTH' ? true : item.isActual)"
         class="sizes_item"
         :class="{
-          activeSizeItem: type === 'SIZE' ? isActiveSize(item.id) : isActiveHeigth(item.id)
+          activeSizeItem:
+            type === 'SIZE'
+              ? isActiveSize(item.id, type === 'HEIGTH' ? true : item.isActual)
+              : isActiveHeigth(item.id, type === 'HEIGTH' ? true : item.isActual)
         }"
       >
         <span>
           {{ item.value }}
         </span>
+        <img
+          v-if="item.isActual === false"
+          class="remind_icon"
+          src="../../../assets/remind.svg"
+          alt="remind"
+        />
       </div>
     </div>
   </div>
@@ -21,6 +30,7 @@
 
 <script>
 import { mapMutations } from 'vuex'
+
 export default {
   props: {
     title: String,
@@ -37,49 +47,66 @@ export default {
 
   methods: {
     ...mapMutations({
-      setActiveSize: 'setActiveSize'
+      setActiveSizes: 'setActiveSizes',
+      setModalData: 'setModalData'
     }),
-    isActiveSize(currentItemId) {
-      const foundElement = this.isInModal
-        ? this.localActiveSize.find((elem) => elem === currentItemId)
-        : this.$store.state.activeItems.items.activeSize.find((elem) => elem === currentItemId)
-      return !!foundElement
+    isActiveSize(currentItemId, isActual) {
+      if (isActual) {
+        const foundElement = this.isInModal
+          ? this.localActiveSize.find((elem) => elem === currentItemId)
+          : this.$store.state.activeItems.items.activeSize.find((elem) => elem === currentItemId)
+        return !!foundElement
+      }
+      return
     },
-    isActiveHeigth(currentItemId) {
-      return this.isInModal
-        ? this.localActiveHeigth === currentItemId
-        : this.$store.state.activeItems.items.activeHeigth === currentItemId
+    isActiveHeigth(currentItemId, isActual) {
+      if (isActual) {
+        return this.isInModal
+          ? this.localActiveHeigth === currentItemId
+          : this.$store.state.activeItems.items.activeHeigth === currentItemId
+      }
+      return
     },
-    onItemClick(type, id) {
-      if (type === 'SIZE') {
-        let foundElement = this.isActiveSize(id)
-        if (this.isInModal) {
-          foundElement
-            ? (this.localActiveSize = this.localActiveSize.filter((elem) => elem !== id))
-            : (this.localActiveSize = [...this.localActiveSize, id])
-        } else {
-          foundElement
-            ? this.setActiveSize({
-                activeSize: this.$store.state.activeItems.items.activeSize.filter(
-                  (elem) => elem !== id
-                ),
-                activeHeigth: this.$store.state.activeItems.items.activeHeigth
-              })
-            : this.setActiveSize({
-                activeSize: [...this.$store.state.activeItems.items.activeSize, id],
-                activeHeigth: this.$store.state.activeItems.items.activeHeigth
-              })
-        }
-      } else if (type === 'HEIGTH') {
-        if (this.isInModal) {
-          this.localActiveHeigth === id
-            ? (this.localActiveHeigth = null)
-            : (this.localActiveHeigth = id)
-        } else {
-          this.setActiveSize({
-            activeSize: this.$store.state.activeItems.items.activeSize,
-            activeHeigth: this.$store.state.activeItems.items.activeHeigth === id ? null : id
-          })
+    onItemClick(type, id, isActual) {
+      if (isActual) {
+        if (type === 'SIZE') {
+          let foundElement = this.isActiveSize(id, isActual)
+
+          if (this.isInModal) {
+            foundElement
+              ? (this.localActiveSize = this.localActiveSize.filter((elem) => elem !== id))
+              : (this.localActiveSize = [...this.localActiveSize, id])
+
+            this.$emit('saveData', this.localActiveSize, null)
+          } else {
+            foundElement
+              ? this.setActiveSizes({
+                  activeSize: this.$store.state.activeItems.items.activeSize.filter((elem) => {
+                    console.log(elem)
+                    return elem !== id
+                  }),
+                  activeHeigth: this.$store.state.activeItems.items.activeHeigth
+                })
+              : this.setActiveSizes({
+                  activeSize: [...this.$store.state.activeItems.items.activeSize, id],
+                  activeHeigth: this.$store.state.activeItems.items.activeHeigth
+                })
+            this.setModalData()
+          }
+        } else if (type === 'HEIGTH') {
+          if (this.isInModal) {
+            this.localActiveHeigth === id
+              ? (this.localActiveHeigth = null)
+              : (this.localActiveHeigth = id)
+
+            this.$emit('saveData', [], this.localActiveHeigth)
+          } else {
+            this.setActiveSizes({
+              activeSize: this.$store.state.activeItems.items.activeSize,
+              activeHeigth: this.$store.state.activeItems.items.activeHeigth === id ? null : id
+            })
+            this.setModalData()
+          }
         }
       }
     }
@@ -100,7 +127,9 @@ export default {
 .sizes_item {
   min-width: 65px;
   position: relative;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: 1px solid;
   border-color: #b0afab;
   border-radius: 7px;
@@ -115,5 +144,11 @@ export default {
 }
 .activeSizeItem span {
   color: white;
+}
+.remind_icon {
+  position: absolute;
+  top: -5px;
+  right: -4px;
+  background-color: white;
 }
 </style>
