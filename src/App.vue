@@ -16,11 +16,10 @@
       <div class="global_wrapper_inner">
         <ExtraInfo @toggle="getToggleValue" />
         <PriceInfo :toggle="toggle" />
-        <div class="buttons_wrapper">
-          <CommonButtons type="IN_CART" />
-          <CommonButtons type="IN_ONE_CLICK" />
-        </div>
+        <BuyingProcess />
         <ShipmentProduct city="Москва" />
+        <OtherColors :data="[$store.state.product.photos[0].original]" />
+        <AboutTheProduct :data="$store.state.product.aboutProductData" />
       </div>
     </div>
   </div>
@@ -31,9 +30,12 @@ import Loader from './components/Loader.vue'
 import BackButton from './components/common/BackButton.vue'
 import ProductPhotos from './components/productPhotos/ProductPhotos.vue'
 import ExtraInfo from './components/extraInfo/ExtraInfo.vue'
-import PriceInfo from './components/priceInfo/PriceInfo.vue'
+import PriceInfo from './components/PriceInfo.vue'
 import CommonButtons from './components/common/CommonButtons.vue'
 import ShipmentProduct from './components/ShipmentProduct.vue'
+import AboutTheProduct from './components/AboutTheProduct.vue'
+import OtherColors from './components/OtherColors.vue'
+import BuyingProcess from './components/buyingProcess/BuyingProcess.vue'
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
@@ -43,8 +45,10 @@ export default {
     ProductPhotos,
     ExtraInfo,
     PriceInfo,
-    CommonButtons,
-    ShipmentProduct
+    ShipmentProduct,
+    OtherColors,
+    AboutTheProduct,
+    BuyingProcess
   },
   data() {
     return {
@@ -91,10 +95,5 @@ export default {
   display: flex;
   flex-direction: column;
   /* align-items: flex-end; */
-}
-.buttons_wrapper {
-  display: flex;
-  margin-top: 25px;
-  gap: 20px;
 }
 </style>

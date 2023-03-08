@@ -4,7 +4,10 @@ import { createStore } from 'vuex'
 export default createStore({
   state: {
     product: {},
-    loading: false
+    loading: false,
+    activeItems: {
+      items: { activeSize: [], activeHeigth: null }
+    }
   },
   getters: {
     product: (state) => {
@@ -17,6 +20,10 @@ export default createStore({
     },
     setLoading(state, isLoading: boolean) {
       state.loading = isLoading
+    },
+    setActiveSize(state, items) {
+      console.log('hello')
+      state.activeItems.items = items
     }
   },
   actions: {

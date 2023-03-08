@@ -44,7 +44,7 @@
             >
           </div>
           <div class="promocode_description_block_footer">
-            <img src="../../assets/clockIcon.svg" alt="clock" />
+            <img src="../assets/clockIcon.svg" alt="clock" />
             <CustomTimer :time="promocodeEndDate" />
           </div>
         </div>
@@ -69,20 +69,20 @@
     </div>
     <div class="second_option_of_price_block">
       <span class="second_option_of_price">{{ priceHandler('SECOND_OPTION_OF_PRICE') }}</span>
-      <img src="../../assets/addIndoIcon.svg" alt="addIndoIcon" />
+      <img src="../assets/addIndoIcon.svg" alt="addIndoIcon" />
     </div>
   </div>
 </template>
 
 <script>
-import CustomTimer from '../common/CustomTimer.vue'
+import CustomTimer from './common/CustomTimer.vue'
 
 export default {
-  components: {
-    CustomTimer
-  },
   props: {
     toggle: Boolean
+  },
+  components: {
+    CustomTimer
   },
   data() {
     return {
