@@ -3,27 +3,9 @@
     <div class="wrapper__buy_info_inner">
       <div class="wrapper_buy_info">
         <span class="buy_info_text">купили 43 раза</span>
-        <span class="buy_info_text"> | </span>
+        <span class="buy_info_text remove_in_mobile"> | </span>
         <div class="cart_info_wrapper">
-          <svg
-            width="13"
-            height="16"
-            viewBox="0 0 13 16"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M0.6 5C0.6 4.77909 0.779086 4.6 1 4.6H12C12.2209 4.6 12.4 4.77909 12.4 5V13C12.4 14.3255 11.3255 15.4 10 15.4H3C1.67452 15.4 0.6 14.3255 0.6 13V5Z"
-              stroke="#B0AFAB"
-              stroke-width="1.2"
-            />
-            <path
-              d="M4 7V3.5C4 2.11929 5.11929 1 6.5 1V1C7.88071 1 9 2.11929 9 3.5V7"
-              stroke="#B0AFAB"
-              stroke-width="1.2"
-              stroke-linecap="round"
-            />
-          </svg>
+          <img src="../../assets/cartIcon.svg" />
           <span class="buy_info_text"> в корзине у 15 пользователей</span>
         </div>
       </div>
@@ -37,22 +19,28 @@
       </div>
     </div>
     <div class="review_buttons_wrapper">
-      <ResourceButtons
-        v-for="(item, index) in buttonsDataArr"
-        :key="index"
-        :buttonType="item.type"
-      />
+      <ResourceButtons v-for="item in buttonsDataArr" :key="item" :buttonType="item.type" />
+    </div>
+    <div class="mobile_brand_info_wrapper">
+      <div class="mobile_brand_text_wrapper">
+        <span>{{ title }}</span>
+        <span>{{ category }}</span>
+      </div>
+      <img src="../../assets/brandLogo.svg" />
     </div>
   </div>
 </template>
 
 <script>
 import ResourceButtons from './components/ResourceButtons.vue'
+import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
       buttonsDataArr: [{ type: 'REVIEWS' }, { type: 'FEEDBACK' }, { type: 'QUESTIONS' }],
-      toggle: false
+      toggle: false,
+      title: '',
+      category: ''
     }
   },
   methods: {
@@ -66,6 +54,16 @@ export default {
   },
   components: {
     ResourceButtons
+  },
+
+  computed: {
+    ...mapGetters({
+      product: 'product'
+    })
+  },
+  created() {
+    this.title = this.product.fullName + ' ' + this.product.colors[0].value
+    this.category = this.product.category.value
   }
 }
 </script>
@@ -168,5 +166,39 @@ input:checked + .slider:before {
 .active {
   transition: 0.4s;
   color: #b0afab;
+}
+.mobile_brand_info_wrapper {
+  display: none;
+}
+
+@media screen and (max-width: 1050px) {
+  .extra_info_wrapper {
+    margin-top: 20px;
+  }
+
+  .wrapper_buy_info {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .wrapper_price_options {
+    display: none;
+  }
+  .remove_in_mobile {
+    display: none;
+  }
+  .mobile_brand_info_wrapper {
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-top: 15px;
+  }
+  .mobile_brand_text_wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+  .mobile_brand_text_wrapper span:nth-child(2) {
+    color: #b0afab;
+  }
 }
 </style>

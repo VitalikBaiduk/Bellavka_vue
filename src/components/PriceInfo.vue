@@ -4,6 +4,7 @@
       <span class="price_block_header_text">
         {{ toggle ? 'Розничная цена:' : 'Оптовая цена:' }}
       </span>
+      <MoreInfoButton v-if="width < 1050" @setIsShowFullPriceInfo="showFullPriceInfo" />
     </div>
     <div class="price_block_items">
       <div class="prices">
@@ -13,56 +14,35 @@
         </div>
         <div class="discounts_description_block">
           <span class="discount_amount">
-            {{
-              '-' +
-              $store.state.product.price.discount.market.amount +
-              $store.state.product.price.symbol
-            }}
+            {{ '-' + product.price.discount.market.amount + product.price.symbol }}
             <span class="discount_percent">
-              скидка бренда {{ $store.state.product.price.discount.market.percent + '%' }}
+              скидка бренда {{ product.price.discount.market.percent + '%' }}
             </span>
           </span>
           <span class="discount_amount">
-            {{
-              '-' +
-              $store.state.product.price.discount.promocode.amount +
-              $store.state.product.price.symbol
-            }}
+            {{ '-' + product.price.discount.promocode.amount + product.price.symbol }}
             <span class="discount_percent">
-              {{ $store.state.product.promocode.name }}
-              {{ $store.state.product.price.discount.promocode.percent + '%' }}
+              {{ product.promocode.name }}
+              {{ product.price.discount.promocode.percent + '%' }}
             </span>
           </span>
         </div>
       </div>
-      <div class="promocode_block">
+      <div v-if="isShowFullPriceInfo" class="promocode_block">
         <div class="promocode_description_block">
           <div class="main_promocode_description">
-            <span class="promocode_name"> {{ $store.state.product.promocode.name }} </span>
-            <span class="promocode_description">
-              {{ $store.state.product.promocode.description }}</span
-            >
+            <span class="promocode_name"> {{ product.promocode.name }} </span>
+            <span class="promocode_description"> {{ product.promocode.description }}</span>
           </div>
           <div class="promocode_description_block_footer">
             <img src="../assets/clockIcon.svg" alt="clock" />
-            <CustomTimer :time="promocodeEndDate" />
+            <CustomTimer :time="new Date(promocodeEndDate)" />
           </div>
         </div>
-        <svg
-          width="4"
-          height="120"
-          viewBox="0 0 4 120"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M3.17986 299H0V287.036H3.17986V299ZM3.17986 275.079H0V263.116H3.17986V275.079ZM3.17986 251.158H0V239.201H3.17986V251.158ZM3.17986 227.238H0V215.281H3.17986V227.238ZM3.17986 203.323H0V191.366H3.17986V203.323ZM3.17986 179.403H0V167.445H3.17986V179.403ZM3.17986 155.482H0V143.525H3.17986V155.482ZM3.17986 131.561H0V119.604H3.17986V131.561ZM3.17986 107.64H0V95.6831H3.17986V107.64ZM3.17986 83.7195H0V71.7623H3.17986V83.7195ZM3.17986 59.7987H0V47.8415H3.17986V59.7987ZM3.17986 35.8844H0V23.9208H3.17986V35.8844ZM3.17986 11.9636H0V0H3.17986V11.9636Z"
-            fill="white"
-          />
-        </svg>
+        <img src="../assets/customBorderDashed.svg" />
         <div class="promocode_percent_block">
           <span class="promocode_percent" fontSize="60px" fontWeight="800">
-            {{ '-' + $store.state.product.price.discount.promocode.percent + '%' }}
+            {{ '-' + product.price.discount.promocode.percent + '%' }}
           </span>
         </div>
       </div>
@@ -76,39 +56,57 @@
 
 <script>
 import CustomTimer from './common/CustomTimer.vue'
+import { mapGetters } from 'vuex'
+import MoreInfoButton from './common/MoreInfoButton.vue'
+import { useWindowSize } from '@vueuse/core'
 
 export default {
+  setup() {
+    const { width } = useWindowSize()
+    return {
+      width
+    }
+  },
   props: {
     toggle: Boolean
   },
   components: {
-    CustomTimer
+    CustomTimer,
+    MoreInfoButton
   },
   data() {
     return {
-      promocodeEndDate: this.$store.state.product.promocode.endedAt
+      promocodeEndDate: null,
+      isShowFullPriceInfo: true
     }
   },
   methods: {
     priceHandler(type) {
       const priceResult = {
         ['CURRENT']: this.toggle
-          ? this.$store.state.product.price.current + this.$store.state.product.price.symbol
-          : this.$store.state.product.price.wholesale + this.$store.state.product.price.symbol,
+          ? this.product.price.current + this.product.price.symbol
+          : this.product.price.wholesale + this.product.price.symbol,
         ['OLD']: this.toggle
-          ? this.$store.state.product.price.old + this.$store.state.product.price.symbol
-          : this.$store.state.product.price.wholesaleOld + this.$store.state.product.price.symbol,
+          ? this.product.price.old + this.product.price.symbol
+          : this.product.price.wholesaleOld + this.product.price.symbol,
         ['SECOND_OPTION_OF_PRICE']: this.toggle
-          ? 'Оптовая цена: ' +
-            this.$store.state.product.price.wholesale +
-            this.$store.state.product.price.symbol
-          : 'Розничная цена: ' +
-            this.$store.state.product.price.retail +
-            this.$store.state.product.price.symbol
+          ? 'Оптовая цена: ' + this.product.price.wholesale + this.product.price.symbol
+          : 'Розничная цена: ' + this.product.price.retail + this.product.price.symbol
       }
 
       return priceResult[type]
+    },
+    showFullPriceInfo(isShowFullPriceInfo) {
+      this.isShowFullPriceInfo = isShowFullPriceInfo
     }
+  },
+  computed: {
+    ...mapGetters({
+      product: 'product'
+    })
+  },
+  created() {
+    this.promocodeEndDate = this.product.promocode.endedAt
   }
 }
 </script>
@@ -132,8 +130,8 @@ export default {
   width: 100%;
   display: flex;
   justify-content: space-between;
-  /* flex-wrap: wrap; */
 }
+
 .prices {
   width: 30%;
   max-width: 220px;
@@ -194,6 +192,7 @@ export default {
   justify-content: space-between;
   padding: 15px 15px 10px;
 }
+
 .main_promocode_description {
   display: flex;
   flex-direction: column;
@@ -226,5 +225,24 @@ export default {
 }
 .second_option_of_price {
   margin-right: 10px;
+}
+
+@media screen and (max-width: 1200px) {
+  .price_block_items {
+    flex-wrap: wrap;
+  }
+  .prices {
+    width: 100%;
+  }
+  .promocode_block {
+    width: 100%;
+  }
+  .price_block_header {
+    background: white;
+    padding: 0;
+  }
+  .price_block_header_text {
+    color: #282828;
+  }
 }
 </style>

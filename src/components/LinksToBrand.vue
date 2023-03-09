@@ -6,7 +6,7 @@
       </span>
       <img src="../assets/brandLogo.svg" alt="logo" />
     </div>
-    <a v-for="(item, index) in brandLinks" :key="index" class="link_to_brand">
+    <a v-for="item in brandLinks" :key="item" class="link_to_brand">
       <span class="link_to_brand_text">{{ item.value }}</span>
       <img src="../assets/arrowRight.svg" alt="arrow" />
     </a>
@@ -14,10 +14,23 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   props: {
-    deliveryAvailability: String,
     brandLinks: Array
+  },
+  data() {
+    return {
+      deliveryAvailability: ''
+    }
+  },
+  computed: {
+    ...mapGetters({
+      product: 'product'
+    })
+  },
+  created() {
+    this.deliveryAvailability = this.product.availabilityStatus
   }
 }
 </script>

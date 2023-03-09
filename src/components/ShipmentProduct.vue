@@ -1,26 +1,35 @@
 <template>
   <div class="shipment_wrapper">
     <span class="shipment_city">Доставка: {{ city }}</span>
-    <span class="shipment_data" v-for="(item, index) in shipmentData" :key="index">
-      {{ item.label + item.value + $store.state.product.shipmentData.symbol }}
+    <span class="shipment_data" v-for="item in localShipmentData" :key="item">
+      {{ item.label + item.value + product.shipmentData.symbol }}
     </span>
     <a class="change_button">Изменить</a>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
   props: {
     city: String
   },
   data() {
     return {
-      shipmentData: [
-        { label: 'С примеркой: от ', value: this.$store.state.product.shipmentData.fittingPrice },
-        { label: 'Курьером: от ', value: this.$store.state.product.shipmentData.courierPrice },
-        { label: 'Почтой: от ', value: this.$store.state.product.shipmentData.postPrice }
-      ]
+      localShipmentData: []
     }
+  },
+  computed: {
+    ...mapGetters({
+      product: 'product'
+    })
+  },
+  created() {
+    this.localShipmentData = [
+      { label: 'С примеркой: от ', value: this.product.shipmentData.fittingPrice },
+      { label: 'Курьером: от ', value: this.product.shipmentData.courierPrice },
+      { label: 'Почтой: от ', value: this.product.shipmentData.postPrice }
+    ]
   }
 }
 </script>
@@ -51,5 +60,14 @@ export default {
   color: #c49e74;
   border-bottom: 1px solid #c49e74;
   cursor: pointer;
+}
+
+@media screen and (max-width: 1050px) {
+  .shipment_wrapper {
+    max-width: 100%;
+    padding: 0;
+    border: none;
+    margin-top: 30px;
+  }
 }
 </style>

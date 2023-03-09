@@ -2,11 +2,11 @@
   <div class="modal_wrapper">
     <div class="modal_item">
       <span class="modal_title">
-        {{ this.$store.state.modalData.modalTitle }}
+        {{ modalData.modalTitle }}
         <SizesComponent
-          :title="this.$store.state.modalData.contentTitle"
+          :title="modalData.contentTitle"
           :sizeData="sizeData"
-          :type="this.$store.state.modalData.contentType"
+          :type="modalData.contentType"
           :isInModal="true"
           @saveData="saveData"
         />
@@ -20,14 +20,15 @@
 
 <script>
 import SizesComponent from '../buyingProcess/components/SizesComponent.vue'
-import { mapMutations } from 'vuex'
+import { mapMutations, mapGetters } from 'vuex'
+
 export default {
   data() {
     return {
-      sizeData:
-        this.$store.state.modalData.contentType === 'HEIGTH'
-          ? this.$store.state.product.heights
-          : this.$store.state.product.sizes
+      sizeData: null,
+      modalSizes: [],
+      modalHeigth: null,
+      activeItemsData: null
     }
   },
   components: {
@@ -39,25 +40,39 @@ export default {
       setModalData: 'setModalData',
       setActiveSizes: 'setActiveSizes'
     }),
-    saveData(modalSizes, modalHeigth) {
-      console.log(modalHeigth)
-      if (modalSizes.length !== 0) {
-        this.setActiveSizes({
-          activeSize: modalSizes,
-          activeHeigth: this.$store.state.activeItems.items.activeHeigth
-        })
-      } else if (modalHeigth !== null) {
-        this.setActiveSizes({
-          activeSize: this.$store.state.activeItems.items.activeSize,
-          activeHeigth: modalHeigth
-        })
-      }
+    saveData(localModalSizes, localModalHeigth) {
+      this.modalSizes = localModalSizes
+      this.modalHeigth = localModalHeigth
     },
     closeModal() {
+      if (this.modalSizes.length !== 0) {
+        this.setActiveSizes({
+          activeSize: this.modalSizes,
+          activeHeigth: this.activeItemsData.items.activeHeigth
+        })
+      } else if (this.modalHeigth !== null) {
+        this.setActiveSizes({
+          activeSize: this.activeItemsData.items.activeSize,
+          activeHeigth: this.modalHeigth
+        })
+      }
       this.setIsActiveModal(false)
-      console.log(Object.keys(this.modalData).length)
-      // сделать так чтобы не закрывалось при нажатии на модалку
     }
+  },
+  computed: {
+    ...mapGetters({
+      product: 'product',
+      activeItems: 'activeItems',
+      modalData: 'modalData'
+    })
+  },
+  created() {
+    this.activeItemsData = this.activeItems
+    this.sizeData =
+      this.modalData.contentType === 'HEIGTH' ? this.product.heights : this.product.sizes
+  },
+  updated() {
+    this.setModalData()
   }
 }
 </script>

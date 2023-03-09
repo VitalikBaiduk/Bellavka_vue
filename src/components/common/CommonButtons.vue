@@ -43,4 +43,10 @@ export default {
 .common_button_text {
   text-transform: uppercase;
 }
+
+@media screen and (max-width: 1050px) {
+  .common_button_wrapper {
+    max-width: 95%;
+  }
+}
 </style>

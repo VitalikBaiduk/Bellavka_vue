@@ -3,16 +3,20 @@
     <div v-on:click="setHideInfo" class="about_the_product_title_block">
       <span class="about_the_product_title"> О товаре </span>
       <img
+        class="remove_in_mobile"
         src="../assets/circle-double-down.svg
       "
         :class="{ showInfo: hideInfo }"
       />
+      <div v-if="width < 1050" v-on:click="setHideInfoMobile">
+        <MoreInfoButton />
+      </div>
     </div>
     <span
       class="about_the_product_label"
       :class="{ hideInfo }"
-      v-for="(item, index) in productdata"
-      :key="index"
+      v-for="item in productdata"
+      :key="item"
     >
       {{ item.label }}
       <span class="about_the_product_value"> {{ item.value }}</span>
@@ -21,13 +25,26 @@
 </template>
 
 <script>
+import MoreInfoButton from '../components/common/MoreInfoButton.vue'
+import { useWindowSize } from '@vueuse/core'
+
 export default {
+  setup() {
+    const { width } = useWindowSize()
+    return {
+      width
+    }
+  },
   props: {
-    data: Array
+    data: Object
+  },
+  components: {
+    MoreInfoButton
   },
   data() {
     return {
       hideInfo: false,
+
       productdata: [
         {
           label: 'Страна производитель: ',
@@ -74,6 +91,11 @@ export default {
   },
   methods: {
     setHideInfo() {
+      if (this.width > 1050) {
+        this.hideInfo = !this.hideInfo
+      }
+    },
+    setHideInfoMobile() {
       this.hideInfo = !this.hideInfo
     }
   }
@@ -110,5 +132,13 @@ export default {
 
 .hideInfo {
   display: none;
+}
+@media screen and (max-width: 1050px) {
+  .about_the_product_wrapper {
+    max-width: 100%;
+  }
+  .about_the_product_title_block {
+    justify-content: space-between;
+  }
 }
 </style>

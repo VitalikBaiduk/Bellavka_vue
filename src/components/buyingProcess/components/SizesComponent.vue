@@ -3,8 +3,8 @@
     <span> {{ title }}</span>
     <div class="sizes_block">
       <div
-        v-for="(item, index) in sizeData"
-        :key="index"
+        v-for="item in sizeData"
+        :key="item"
         v-on:click="onItemClick(type, item.id, type === 'HEIGTH' ? true : item.isActual)"
         class="sizes_item"
         :class="{
@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex'
+import { mapMutations, mapGetters } from 'vuex'
 
 export default {
   props: {
@@ -54,7 +54,7 @@ export default {
       if (isActual) {
         const foundElement = this.isInModal
           ? this.localActiveSize.find((elem) => elem === currentItemId)
-          : this.$store.state.activeItems.items.activeSize.find((elem) => elem === currentItemId)
+          : this.activeItems.items.activeSize.find((elem) => elem === currentItemId)
         return !!foundElement
       }
       return
@@ -63,7 +63,7 @@ export default {
       if (isActual) {
         return this.isInModal
           ? this.localActiveHeigth === currentItemId
-          : this.$store.state.activeItems.items.activeHeigth === currentItemId
+          : this.activeItems.items.activeHeigth === currentItemId
       }
       return
     },
@@ -81,15 +81,14 @@ export default {
           } else {
             foundElement
               ? this.setActiveSizes({
-                  activeSize: this.$store.state.activeItems.items.activeSize.filter((elem) => {
-                    console.log(elem)
+                  activeSize: this.activeItems.items.activeSize.filter((elem) => {
                     return elem !== id
                   }),
-                  activeHeigth: this.$store.state.activeItems.items.activeHeigth
+                  activeHeigth: this.activeItems.items.activeHeigth
                 })
               : this.setActiveSizes({
-                  activeSize: [...this.$store.state.activeItems.items.activeSize, id],
-                  activeHeigth: this.$store.state.activeItems.items.activeHeigth
+                  activeSize: [...this.activeItems.items.activeSize, id],
+                  activeHeigth: this.activeItems.items.activeHeigth
                 })
             this.setModalData()
           }
@@ -102,14 +101,20 @@ export default {
             this.$emit('saveData', [], this.localActiveHeigth)
           } else {
             this.setActiveSizes({
-              activeSize: this.$store.state.activeItems.items.activeSize,
-              activeHeigth: this.$store.state.activeItems.items.activeHeigth === id ? null : id
+              activeSize: this.activeItems.items.activeSize,
+              activeHeigth: this.activeItems.items.activeHeigth === id ? null : id
             })
             this.setModalData()
           }
         }
       }
     }
+  },
+  computed: {
+    ...mapGetters({
+      product: 'product',
+      activeItems: 'activeItems'
+    })
   }
 }
 </script>
@@ -150,5 +155,13 @@ export default {
   top: -5px;
   right: -4px;
   background-color: white;
+}
+
+@media screen and (max-width: 1050px) {
+  .sizes_block {
+    height: 60px;
+    position: relative;
+    overflow-x: scroll;
+  }
 }
 </style>

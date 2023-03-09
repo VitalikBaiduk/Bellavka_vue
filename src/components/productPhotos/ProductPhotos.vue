@@ -1,26 +1,23 @@
 <template>
   <div class="slider_wrapper">
-    <VueSlickCarousel :arrows="true" :dots="true" v-bind="settings">
-      <div>1</div>
-      <div>2</div>
-      <div>3</div>
-      <div>4</div>
-    </VueSlickCarousel>
+    <div class="slider_item" :style="{ 'margin-top': '-' + 160 * indexOfAtiveItem + 'px' }">
+      <div v-for="item in productPhotosData" :key="item">
+        <img class="small_item" v-if="!item.preview" :src="item[440]" />
+        <div class="small_video_wrapper">
+          <img class="small_item" v-if="item.preview" :src="item.preview" />
+          <img class="player" v-if="item.preview" src="../../assets/VideoPlayer.svg" />
+        </div>
+      </div>
+    </div>
     <div class="active_item_wrapper">
-      <video
-        class="active_video"
-        v-if="activeItem >= productPhotosData.length - 1"
-        muted
-        loop
-        autoPlay
-      >
-        <source type="video/mp4" :src="productPhotosData[activeItem].original" />
+      <video class="small_item" v-if="currentItem.preview" muted loop autoPlay>
+        <source type="video/mp4" :src="productPhotosData[indexOfAtiveItem].original" />
       </video>
 
       <img
         class="active_photo"
-        v-if="activeItem < productPhotosData.length - 1"
-        :src="productPhotosData[activeItem].original"
+        v-if="!currentItem.preview"
+        :src="productPhotosData[indexOfAtiveItem].original"
       />
       <span class="active_item_top_label">new</span>
       <div class="active_item_bottom_label">
@@ -32,43 +29,88 @@
         <img src="../../assets/download-four.svg" />
       </div>
     </div>
+    <button v-on:click="prevSlide" class="slider_button_prev">
+      <img src="../../assets/ArrowUp.svg" />
+    </button>
+    <button v-on:click="nextSlide" class="slider_button_next">
+      <img src="../../assets/ArrowUp.svg" />
+    </button>
   </div>
 </template>
 
 <script>
-import VueSlickCarousel from 'vue-slick-carousel'
-import 'vue-slick-carousel/dist/vue-slick-carousel.css'
-import 'vue-slick-carousel/dist/vue-slick-carousel-theme.css'
+import { mapGetters } from 'vuex'
 
 export default {
-  props: {
-    promocode: String
-  },
   data() {
     return {
-      settings: {
-        dots: true,
-        dotsClass: 'slick-dots custom-dot-class',
-        edgeFriction: 0.35,
-        infinite: false,
-        speed: 500,
-        slidesToShow: 1,
-        slidesToScroll: 1
-      },
-      activeItem: 0,
-      productPhotosData: [...this.$store.state.product.photos, ...this.$store.state.product.videos]
+      indexOfAtiveItem: 0,
+      productPhotosData: null,
+      currentItem: null,
+      promocode: ''
     }
   },
-  components: {
-    VueSlickCarousel: window['vue-slick-carousel']
+  methods: {
+    prevSlide() {
+      if (this.indexOfAtiveItem > 0) {
+        this.indexOfAtiveItem--
+      }
+      this.currentItem = this.productPhotosData[this.indexOfAtiveItem]
+    },
+    nextSlide() {
+      if (this.indexOfAtiveItem >= this.productPhotosData.length - 1) {
+        this.indexOfAtiveItem = 0
+      }
+      this.indexOfAtiveItem++
+      this.productPhotosData.push(this.productPhotosData[this.indexOfAtiveItem])
+      this.currentItem = this.productPhotosData[this.indexOfAtiveItem]
+    }
+  },
+  computed: {
+    ...mapGetters({
+      product: 'product'
+    })
+  },
+  created() {
+    this.productPhotosData = [...this.product.photos, ...this.product.videos]
+    this.currentItem = this.productPhotosData[0]
+    this.promocode = this.product.promocode.name
   }
 }
 </script>
 <style>
 .slider_wrapper {
+  position: relative;
   width: 100%;
-  max-height: 675px;
+  height: 670px;
   display: flex;
+  overflow: hidden;
+}
+.slider_item {
+  position: relative;
+  top: 30px;
+  width: 96px;
+  padding: 0;
+  transition: all ease 0.5s;
+  overflow: hidden;
+}
+.slider_button_prev {
+  border: none;
+  width: 100px;
+  background: white;
+  position: absolute;
+  top: 0;
+  cursor: pointer;
+}
+.slider_button_next {
+  border: none;
+  width: 100px;
+  height: 20px;
+  background: white;
+  transform: rotate(180deg);
+  position: absolute;
+  bottom: 0;
+  cursor: pointer;
 }
 .active_item_wrapper {
   position: relative;
@@ -144,5 +186,21 @@ export default {
   flex-direction: column;
   justify-content: space-between;
   cursor: pointer;
+}
+.small_item {
+  width: 100%;
+  height: auto;
+  max-height: 100%;
+  margin-bottom: 10px;
+  transition: 0.2s linear;
+  object-fit: cover;
+}
+.small_video_wrapper {
+  position: relative;
+}
+.player {
+  position: absolute;
+  top: 35%;
+  left: 30%;
 }
 </style>

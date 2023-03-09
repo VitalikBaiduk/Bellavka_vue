@@ -5,8 +5,8 @@
       <span class="size_table"> Таблица размеров</span>
     </div>
     <SizesComponent
-      v-for="(item, index) in sizeData"
-      :key="index"
+      v-for="item in sizeData"
+      :key="item"
       :title="index === 1 ? 'Рост:' : ''"
       :sizeData="item"
       :type="index === 0 ? 'SIZE' : 'HEIGTH'"
