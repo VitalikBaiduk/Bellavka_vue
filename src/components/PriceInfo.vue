@@ -227,7 +227,7 @@ export default {
   margin-right: 10px;
 }
 
-@media screen and (max-width: 1200px) {
+@media screen and (max-width: 1295px) {
   .price_block_items {
     flex-wrap: wrap;
   }
