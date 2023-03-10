@@ -56,6 +56,7 @@ export default {
           activeHeigth: this.modalHeigth
         })
       }
+      this.setModalData()
       this.setIsActiveModal(false)
     }
   },
@@ -70,9 +71,6 @@ export default {
     this.activeItemsData = this.activeItems
     this.sizeData =
       this.modalData.contentType === 'HEIGTH' ? this.product.heights : this.product.sizes
-  },
-  updated() {
-    this.setModalData()
   }
 }
 </script>

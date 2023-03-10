@@ -103,9 +103,6 @@ export default {
         this.product.category.value
     })
     this.setModalData()
-  },
-  updated() {
-    this.setModalData()
   }
 }
 </script>
