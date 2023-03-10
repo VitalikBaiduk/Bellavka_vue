@@ -14,6 +14,7 @@
       :navigation="true"
       :modules="modules"
       class="recommendations_swiper"
+      @slideChange="onSlideChange"
     >
       <swiper-slide
         v-for="slide in recommendations"
@@ -85,7 +86,7 @@ export default {
       this.currentSlide = val
     },
     onSlideChange(swiper) {
-      this.currentSlide = swiper.activeIndex
+      this.currentSlide = swiper.realIndex
     }
   },
   computed: {
@@ -122,6 +123,9 @@ export default {
 }
 .total_count_of_recommendations {
   color: #b0afab;
+}
+.recommendations_swiper {
+  position: static;
 }
 
 .recommendations_swiper_slide {
@@ -191,17 +195,7 @@ export default {
   top: 7px;
   right: 4px;
 }
-.carousel .carousel__prev {
-  position: absolute;
-  top: -13px;
-  left: 235px;
-}
-.carousel .carousel__next {
-  position: absolute;
-  transform: rotate(180deg);
-  top: -29px;
-  right: -20px;
-}
+
 .recommendations_item_brand {
   width: 100%;
   text-align: left;
@@ -212,6 +206,16 @@ export default {
 .recommendations_swiper .swiper-button-prev::after {
   content: url('../assets/sliderArrow.svg');
   position: absolute;
+  top: -123px;
+  right: -230px;
+}
+
+.recommendations_swiper .swiper-button-next::after {
+  content: url('../assets/sliderArrow.svg');
+  position: absolute;
+  top: -107px;
+  right: -17px;
+  transform: rotate(180deg);
 }
 @media screen and (max-width: 1050px) {
   .recommendations_info_wrapper {
@@ -219,6 +223,12 @@ export default {
   }
   .recommendations_title_text {
     color: #bd9365;
+  }
+  .recommendations_swiper .swiper-button-next {
+    display: none;
+  }
+  .recommendations_swiper .swiper-button-prev {
+    display: none;
   }
 }
 </style>
