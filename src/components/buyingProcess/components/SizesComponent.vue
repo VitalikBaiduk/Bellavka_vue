@@ -163,5 +163,12 @@ export default {
     position: relative;
     overflow-x: scroll;
   }
+  ::-webkit-scrollbar {
+    width: 100%;
+    height: 3px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #282828;
+  }
 }
 </style>
