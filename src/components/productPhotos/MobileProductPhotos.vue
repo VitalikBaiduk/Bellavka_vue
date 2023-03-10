@@ -1,26 +1,21 @@
 <template>
   <div class="mobile_slider_wrapper">
-    <Carousel
-      :breakpoints="breakpoints"
-      v-model="currentSlideIndex"
-      :items-to-show="productPhotosData.length + 1"
-      :wrap-around="true"
+    <swiper
+      :pagination="pagination"
+      :slidesPerView="'auto'"
+      :spaceBetween="0"
+      :modules="modules"
+      class="mySwiper"
+      :loop="true"
     >
-      <Slide class="mobelie_slider" v-for="slide in productPhotosData" :key="slide">
-        <img class="mobelie_img" v-if="slide.original" :src="slide.original" alt="product photo" />
-        <video v-if="currentSlideIndex === productPhotosData.length - 1" muted loop autoPlay>
-          <source
-            class="mobelie_img"
-            type="video/mp4"
-            :src="productPhotosData[currentSlideIndex].original"
-          />
-        </video>
-      </Slide>
-
-      <template #addons>
-        <Pagination />
-      </template>
-    </Carousel>
+      <swiper-slide
+        v-for="slide in productPhotosData"
+        :key="slide"
+        class="swiper-slide_mobile_photo"
+      >
+        <img class="mobelie_img" v-if="slide.original" :src="slide.original" alt="product photo"
+      /></swiper-slide>
+    </swiper>
 
     <div class="mobile_icon_block">
       <div class="mobile_icons">
@@ -37,61 +32,33 @@
 </template>
 
 <script>
-import 'vue3-carousel/dist/carousel.css'
-import { Carousel, Slide, Pagination } from 'vue3-carousel'
 import { mapGetters } from 'vuex'
+import { Swiper, SwiperSlide } from 'swiper/vue'
+import 'swiper/css'
+import 'swiper/css/pagination'
+import { Pagination } from 'swiper'
 
 export default {
   components: {
-    Carousel,
-    Slide,
-    Pagination
+    Swiper,
+    SwiperSlide
+  },
+  setup() {
+    return {
+      pagination: {
+        clickable: true,
+        renderBullet: function (index, className) {
+          return '<span class="' + className + '">' + '</span>'
+        }
+      },
+      modules: [Pagination]
+    }
   },
   data() {
     return {
       indexOfAtiveItem: 0,
       promocode: '',
-      currentSlideIndex: 0,
-      breakpoints: {
-        300: {
-          itemsToShow: 1.5,
-          snapAlign: 'center'
-        },
-        400: {
-          itemsToShow: 1.6,
-          snapAlign: 'center'
-        },
-        500: {
-          itemsToShow: 2.1,
-          snapAlign: 'center'
-        },
-        600: {
-          itemsToShow: 2.4,
-          snapAlign: 'center'
-        },
-
-        700: {
-          itemsToShow: 2.7,
-          snapAlign: 'center'
-        },
-        800: {
-          itemsToShow: 2.7,
-          snapAlign: 'start'
-        },
-        850: {
-          itemsToShow: 2.92,
-          snapAlign: 'start'
-        },
-
-        900: {
-          itemsToShow: 2.95,
-          snapAlign: 'start'
-        },
-        930: {
-          itemsToShow: 3.1,
-          snapAlign: 'start'
-        }
-      }
+      currentSlideIndex: 0
     }
   },
   methods: {
@@ -119,37 +86,14 @@ export default {
   height: 415px;
 }
 
-.mobile_slider_wrapper section .carousel__pagination {
-  position: absolute;
-  bottom: 10px;
-  left: 20px;
-  display: flex;
-  justify-content: center;
-  list-style: none;
-  line-height: 0;
-}
-
-.mobile_slider_wrapper section ol li button::after {
-  content: '';
-  width: 10px;
-  height: 10px;
-  border: 1px solid;
-  border-color: #282828;
-  border-radius: 100%;
-  font-size: 0;
-  background: none;
-}
-
-.mobile_slider_wrapper section ol li .carousel__pagination-button--active::after {
-  background: #282828;
-}
-
-.mobile_slider_wrapper section .carousel__viewport .carousel__track li {
-  width: 250px !important;
-}
-.mobelie_slider {
+.mySwiper {
   width: 100%;
+  height: 370px;
 }
+.swiper-slide_mobile_photo {
+  width: 250px;
+}
+
 .mobelie_img {
   width: 100%;
 }
@@ -192,5 +136,28 @@ export default {
   border-radius: 10px;
   background-color: #08be91;
   padding: 5px 10px;
+  z-index: 9999;
+}
+
+.swiper-pagination {
+  display: flex;
+  position: absolute;
+  left: 20px !important;
+}
+
+.swiper-pagination-bullet {
+  width: 10px;
+  height: 10px;
+  text-align: center;
+  line-height: 20px;
+  font-size: 12px;
+  color: #000;
+  opacity: 1;
+  border: 1px solid;
+  border-color: #282828;
+  background: none;
+}
+.swiper-pagination-bullet-active {
+  background: #282828;
 }
 </style>

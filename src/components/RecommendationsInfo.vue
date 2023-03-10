@@ -4,21 +4,23 @@
       <span class="recommendations_title_text"> Вам может понравиться: </span>
       <span v-if="width > 1050" class="current_recommendation">
         {{ currentSlide + 1 }} /
-        <spam class="total_count_of_recommendations" color="{gray}">{{
-          recommendations.length
-        }}</spam>
+        <span class="total_count_of_recommendations">{{ recommendations.length }}</span>
       </span>
     </div>
-
-    <Carousel
-      :breakpoints="breakpoints"
-      v-model="currentSlide"
-      ref="myCarousel"
-      :items-to-show="3"
-      :wrapAround="true"
+    <swiper
+      :slidesPerView="'auto'"
+      :loop="true"
+      :spaceBetween="15"
+      :navigation="true"
+      :modules="modules"
+      class="recommendations_swiper"
     >
-      <Slide v-for="(slide, index) in recommendations" :key="index">
-        <div v-on:click="slideTo(index + 1)" class="recommendations_item">
+      <swiper-slide
+        v-for="slide in recommendations"
+        :key="slide"
+        class="recommendations_swiper_slide"
+      >
+        <div class="recommendations_item">
           <img
             class="recommendations_item_img"
             v-if="slide.photos[0].original"
@@ -45,77 +47,45 @@
           </span>
           <img class="recommendations_item_like_icon" src="../assets/like.svg" />
         </div>
-      </Slide>
-
-      <template v-if="width > 1050" #addons>
-        <navigation>
-          <template #next>
-            <img src="../assets/sliderArrow.svg" />
-          </template>
-          <template #prev>
-            <img src="../assets/sliderArrow.svg" />
-          </template>
-        </navigation>
-      </template>
-    </Carousel>
+      </swiper-slide>
+    </swiper>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-
-import 'vue3-carousel/dist/carousel.css'
-import { Carousel, Slide, Navigation } from 'vue3-carousel'
+import { Swiper, SwiperSlide } from 'swiper/vue'
+import 'swiper/css'
+import 'swiper/css/navigation'
+import { Navigation } from 'swiper'
 import { useWindowSize } from '@vueuse/core'
 
 export default {
+  components: {
+    Swiper,
+    SwiperSlide
+  },
   setup() {
     const { width } = useWindowSize()
+
     return {
-      width
+      width,
+      modules: [Navigation]
     }
-  },
-  components: {
-    Carousel,
-    Slide,
-    Navigation
   },
   data() {
     return {
       activeRecItem: 1,
       recommendations: null,
-      currentSlide: 0,
-      breakpoints: {
-        300: {
-          itemsToShow: 3
-        },
-        400: {
-          itemsToShow: 3
-        },
-        500: {
-          itemsToShow: 4
-        },
-        600: {
-          itemsToShow: 5
-        },
-        700: {
-          itemsToShow: 6
-        },
-        800: {
-          itemsToShow: 7
-        },
-        900: {
-          itemsToShow: 8
-        },
-        1051: {
-          itemsToShow: 3
-        }
-      }
+      currentSlide: 0
     }
   },
   methods: {
     slideTo(val) {
       this.currentSlide = val
+    },
+    onSlideChange(swiper) {
+      this.currentSlide = swiper.activeIndex
     }
   },
   computed: {
@@ -154,6 +124,9 @@ export default {
   color: #b0afab;
 }
 
+.recommendations_swiper_slide {
+  width: 100px !important;
+}
 .recommendations_item {
   position: relative;
   width: 100px;
@@ -235,6 +208,10 @@ export default {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.recommendations_swiper .swiper-button-prev::after {
+  content: url('../assets/sliderArrow.svg');
+  position: absolute;
 }
 @media screen and (max-width: 1050px) {
   .recommendations_info_wrapper {

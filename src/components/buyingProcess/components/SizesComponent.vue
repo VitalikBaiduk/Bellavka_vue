@@ -71,7 +71,7 @@ export default {
       if (isActual) {
         if (type === 'SIZE') {
           let foundElement = this.isActiveSize(id, isActual)
-
+          console.log(foundElement)
           if (this.isInModal) {
             foundElement
               ? (this.localActiveSize = this.localActiveSize.filter((elem) => elem !== id))
