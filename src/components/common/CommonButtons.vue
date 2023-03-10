@@ -18,7 +18,8 @@
 export default {
   props: {
     type: String
-  }
+  },
+  emits: ['callback']
 }
 </script>
 

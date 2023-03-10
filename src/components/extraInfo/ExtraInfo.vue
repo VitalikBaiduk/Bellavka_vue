@@ -47,9 +47,6 @@ export default {
     setToggle() {
       this.toggle = !this.toggle
       this.$emit('toggle', this.toggle)
-    },
-    setColor() {
-      return this.toggle ? '' : '#B0AFAB'
     }
   },
   components: {

@@ -41,7 +41,7 @@
         </div>
         <img src="../assets/customBorderDashed.svg" />
         <div class="promocode_percent_block">
-          <span class="promocode_percent" fontSize="60px" fontWeight="800">
+          <span class="promocode_percent">
             {{ '-' + product.price.discount.promocode.percent + '%' }}
           </span>
         </div>

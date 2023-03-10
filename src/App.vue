@@ -15,7 +15,7 @@
         </div>
       </div>
 
-      <MobileProductPhotos v-if="width <= 1050" />
+      <MobileProductPhotos v-else />
       <div class="main_info_wrapper">
         <ExtraInfo @toggle="getToggleValue" />
         <PriceInfo :toggle="toggle" />
@@ -114,7 +114,6 @@ export default {
 .extra_wrapper {
   width: 100%;
   padding: 40px 30px 70px 30px;
-  /* overflow: hidden; */
 }
 
 .header_block {
@@ -139,7 +138,6 @@ export default {
   display: flex;
   flex-direction: column;
   margin-left: 20px;
-  /* align-items: flex-end; */
 }
 .recommendations_wrapper {
   width: 100%;

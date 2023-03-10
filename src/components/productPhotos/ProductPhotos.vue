@@ -1,14 +1,28 @@
 <template>
   <div class="slider_wrapper">
-    <div class="slider_item" :style="{ 'margin-top': '-' + 160 * indexOfAtiveItem + 'px' }">
-      <div v-for="item in productPhotosData" :key="item">
+    <swiper
+      :slidesPerView="4"
+      :loop="true"
+      :spaceBetween="15"
+      :direction="'vertical'"
+      :modules="modules"
+      class="product_photo_slider"
+      :navigation="true"
+      @slideChange="onSlideChange"
+    >
+      <swiper-slide
+        class="product_photo_slider_slide"
+        v-for="item in productPhotosData"
+        :key="item"
+        v-on:click="onSlideChange"
+      >
         <img class="small_item" v-if="!item.preview" :src="item[440]" />
         <div class="small_video_wrapper">
           <img class="small_item" v-if="item.preview" :src="item.preview" />
-          <img class="player" v-if="item.preview" src="../../assets/VideoPlayer.svg" />
-        </div>
-      </div>
-    </div>
+          <img class="player" v-if="item.preview" src="../../assets/VideoPlayer.svg" /></div
+      ></swiper-slide>
+    </swiper>
+
     <div class="active_item_wrapper">
       <video class="small_item" v-if="currentItem.preview" muted loop autoPlay>
         <source type="video/mp4" :src="productPhotosData[indexOfAtiveItem].original" />
@@ -29,19 +43,26 @@
         <img src="../../assets/download-four.svg" />
       </div>
     </div>
-    <button v-on:click="prevSlide" class="slider_button_prev">
-      <img src="../../assets/ArrowUp.svg" />
-    </button>
-    <button v-on:click="nextSlide" class="slider_button_next">
-      <img src="../../assets/ArrowUp.svg" />
-    </button>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import { Swiper, SwiperSlide } from 'swiper/vue'
+import 'swiper/css'
+import 'swiper/css/navigation'
+import { Navigation } from 'swiper'
 
 export default {
+  components: {
+    Swiper,
+    SwiperSlide
+  },
+  setup() {
+    return {
+      modules: [Navigation]
+    }
+  },
   data() {
     return {
       indexOfAtiveItem: 0,
@@ -51,19 +72,12 @@ export default {
     }
   },
   methods: {
-    prevSlide() {
-      if (this.indexOfAtiveItem > 0) {
-        this.indexOfAtiveItem--
-      }
-      this.currentItem = this.productPhotosData[this.indexOfAtiveItem]
+    onSlideChange(swiper) {
+      this.currentItem = this.productPhotosData[swiper.realIndex]
+      this.indexOfAtiveItem = swiper.realIndex
     },
-    nextSlide() {
-      if (this.indexOfAtiveItem >= this.productPhotosData.length - 1) {
-        this.indexOfAtiveItem = 0
-      }
-      this.indexOfAtiveItem++
-      this.productPhotosData.push(this.productPhotosData[this.indexOfAtiveItem])
-      this.currentItem = this.productPhotosData[this.indexOfAtiveItem]
+    onActiveItemClick(index) {
+      this.indexOfAtiveItem = index
     }
   },
   computed: {
@@ -85,6 +99,28 @@ export default {
   height: 670px;
   display: flex;
   overflow: hidden;
+}
+.product_photo_slider {
+  width: 100px !important;
+  height: 635px;
+  margin-top: 20px;
+  position: static;
+}
+.product_photo_slider_slide {
+  height: 144px;
+}
+.product_photo_slider .swiper-button-prev::after {
+  content: url('../../assets/ArrowUp.svg');
+  position: relative;
+  top: -337px;
+  left: 28px;
+}
+.product_photo_slider .swiper-button-next::after {
+  content: url('../../assets/ArrowUp.svg');
+  position: relative;
+  bottom: -342px;
+  left: -497px;
+  transform: rotate(180deg);
 }
 .slider_item {
   position: relative;

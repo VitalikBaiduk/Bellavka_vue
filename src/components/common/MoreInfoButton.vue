@@ -34,6 +34,4 @@ export default {
   font-size: 14px;
   color: #c49e74;
 }
-.hide_more_info {
-}
 </style>

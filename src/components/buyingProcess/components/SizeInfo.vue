@@ -17,6 +17,7 @@
 
 <script>
 import SizesComponent from './SizesComponent.vue'
+
 export default {
   props: {
     sizeData: Array

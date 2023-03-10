@@ -107,4 +107,19 @@ export default {
 .save_button_text {
   color: white;
 }
+
+@media screen and (max-width: 550px) {
+  .modal_item {
+    width: 100%;
+    padding: 30px 10px;
+    position: absolute;
+    bottom: 0;
+    border-radius: 20px;
+  }
+  .save_button_wrapper {
+    width: 100%;
+    display: block;
+    text-align: center;
+  }
+}
 </style>

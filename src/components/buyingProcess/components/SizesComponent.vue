@@ -57,7 +57,6 @@ export default {
           : this.activeItems.items.activeSize.find((elem) => elem === currentItemId)
         return !!foundElement
       }
-      return
     },
     isActiveHeigth(currentItemId, isActual) {
       if (isActual) {
@@ -65,13 +64,11 @@ export default {
           ? this.localActiveHeigth === currentItemId
           : this.activeItems.items.activeHeigth === currentItemId
       }
-      return
     },
     onItemClick(type, id, isActual) {
       if (isActual) {
         if (type === 'SIZE') {
           let foundElement = this.isActiveSize(id, isActual)
-          console.log(foundElement)
           if (this.isInModal) {
             foundElement
               ? (this.localActiveSize = this.localActiveSize.filter((elem) => elem !== id))

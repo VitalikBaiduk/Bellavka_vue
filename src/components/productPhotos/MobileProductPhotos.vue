@@ -28,6 +28,9 @@
       </div>
     </div>
     <span class="mobile_status_label"> New </span>
+    <div class="back_button_mobile">
+      <img src="../../assets/backButtonArrow.svg" />
+    </div>
   </div>
 </template>
 
@@ -159,5 +162,17 @@ export default {
 }
 .swiper-pagination-bullet-active {
   background: #282828;
+}
+.back_button_mobile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  background: rgba(255, 255, 255, 0.4);
+  top: 10px;
+  left: 10px;
+  z-index: 999999;
+  padding: 10px;
+  border-radius: 100%;
 }
 </style>
